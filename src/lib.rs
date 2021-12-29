@@ -623,6 +623,16 @@ impl HidDevice {
         self.check_size(res)
     }
 
+    /// Set the first byte of `buf` to the 'Report ID' of the report to be read.
+    /// Upon return, the first byte will still contain the Report ID, and the
+    /// report data will start in buf[1].
+    pub fn get_input_report(&self, buf: &mut [u8]) -> HidResult<usize> {
+        let res = unsafe {
+            ffi::hid_get_input_report(self._hid_device, buf.as_mut_ptr(), buf.len() as size_t)
+        };
+        self.check_size(res)
+    }
+
     /// Set the device handle to be in blocking or in non-blocking mode. In
     /// non-blocking mode calls to `read()` will return immediately with an empty
     /// slice if there is no data to be read. In blocking mode, `read()` will
